@@ -13,6 +13,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final _idController = TextEditingController();
   final _pwController = TextEditingController();
 
+  
+  void _triggerLogin(){
+    final id = _idController.text;
+    final pw = _pwController.text;
+    widget.onLogin(id, pw);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,14 +41,12 @@ class _LoginScreenState extends State<LoginScreen> {
               controller: _pwController,
               obscureText: true,
               decoration: InputDecoration(labelText: '비밀번호'),
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => _triggerLogin(),
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                final id = _idController.text;
-                final pw = _pwController.text;
-                widget.onLogin(id, pw);
-              },
+              onPressed: _triggerLogin,
               child: Text('로그인'),
             ),
           ],

@@ -1,6 +1,5 @@
 // shoppingmalls.dart
 
-import 'package:flutter/material.dart';
 
 // 제품 카테고리를 나타내는 enum
 enum ProductCategory { outer, top, bottom, shoes }

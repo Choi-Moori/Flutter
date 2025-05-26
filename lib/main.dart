@@ -6,6 +6,7 @@ import 'shoppingmalls.dart';
 import 'screens/shopping_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/order_screen.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() => runApp(MyApp());
@@ -19,12 +20,11 @@ class _MyAppState extends State<MyApp> {
   bool _isLoggedIn = false;
 
   void _handleLogin(String id, String pw) {
-    if( id == 'admin' && pw == '1234'){
+    if (id == 'admin' && pw == '1234') {
       setState(() {
         _isLoggedIn = true;
       });
-    }else {
-      // ❗ context는 LoginScreen 내부에서 받아와야 함
+    } else {
       showDialog(
         context: navigatorKey.currentContext!,
         builder: (context) => AlertDialog(
@@ -41,25 +41,33 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  void _handledLogout() {
+    setState(() {
+      _isLoggedIn = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter 쇼핑몰',
-      home: _isLoggedIn
-          ? ShoppingMallApp()
-          : LoginScreen(onLogin: _handleLogin),
       navigatorKey: navigatorKey,
+      home: _isLoggedIn
+          ? ShoppingMallApp(onLogout: _handledLogout)
+          : LoginScreen(onLogin: _handleLogin),
     );
   }
 }
 
 class ShoppingMallApp extends StatefulWidget {
+  final VoidCallback onLogout;
+  const ShoppingMallApp({required this.onLogout});
+
   @override
   _ShoppingMallAppState createState() => _ShoppingMallAppState();
 }
 
 class _ShoppingMallAppState extends State<ShoppingMallApp> {
-  int _currentIndex = 0;
   final List<Product> _products = [
     Product(name: '후드 집업', price: 45000, category: ProductCategory.outer),
     Product(name: '가죽 재킷', price: 85000, category: ProductCategory.outer),
@@ -107,11 +115,21 @@ class _ShoppingMallAppState extends State<ShoppingMallApp> {
                     Tab(icon: Icon(Icons.home, size: 18), text: '홈'),
                     Tab(icon: Icon(Icons.shopping_cart, size: 18), text: '장바구니'),
                     Tab(icon: Icon(Icons.inventory, size: 18), text: '내 주문'),
+                    Tab(icon: Icon(Icons.inventory, size: 18), text: '마이페이지지'),
                   ],
                 ),
               ],
             ),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.black),
+              tooltip: '로그아웃',
+              onPressed: () {
+                widget.onLogout();
+              },
+            ),
+          ],
         ),
         body: TabBarView(
           children: [

@@ -91,43 +91,68 @@ class _ShoppingMallAppState extends State<ShoppingMallApp> {
           elevation: 0,
           backgroundColor: Colors.white,
           toolbarHeight: 70,
-          title: Padding(
-            padding: EdgeInsets.only(top: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.storefront, color: Colors.black),
-                    SizedBox(width: 8),
-                    Text('Flutter 쇼핑몰', style: TextStyle(color: Colors.black)),
-                  ],
-                ),
-                TabBar(
-                  isScrollable: true,
-                  indicator: BoxDecoration(),
-                  indicatorColor: Colors.transparent,
-                  labelPadding: EdgeInsets.symmetric(horizontal: 30),
-                  labelColor: Colors.purple,
-                  unselectedLabelColor: Colors.black,
-                  tabs: [
-                    Tab(icon: Icon(Icons.home, size: 18), text: '홈'),
-                    Tab(icon: Icon(Icons.shopping_cart, size: 18), text: '장바구니'),
-                    Tab(icon: Icon(Icons.inventory, size: 18), text: '내 주문'),
-                    Tab(icon: Icon(Icons.inventory, size: 18), text: '마이페이지지'),
-                  ],
-                ),
-              ],
-            ),
+          title: Row(
+            children: [
+              Icon(Icons.storefront, color: Colors.black),
+              SizedBox(width: 8),
+              Text('Flutter 쇼핑몰', style: TextStyle(color: Colors.black)),
+            ],
           ),
           actions: [
-            IconButton(
-              icon: Icon(Icons.logout, color: Colors.black),
-              tooltip: '로그아웃',
-              onPressed: () {
-                widget.onLogout();
+            PopupMenuButton<String>(
+              icon: Icon(Icons.menu, color: Colors.black),
+              onSelected: (value) {
+                if (value == 'logout') {
+                  widget.onLogout();
+                } else {
+                  DefaultTabController.of(context).animateTo(
+                    ['home', 'cart', 'orders'].indexOf(value),
+                  );
+                }
               },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'home',
+                  child: Row(
+                    children: [
+                      Icon(Icons.home, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text('홈'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'cart',
+                  child: Row(
+                    children: [
+                      Icon(Icons.shopping_cart, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text('장바구니'),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'orders',
+                  child: Row(
+                    children: [
+                      Icon(Icons.inventory, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text('내 주문'),
+                    ],
+                  ),
+                ),
+                PopupMenuDivider(),
+                PopupMenuItem(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text('로그아웃'),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

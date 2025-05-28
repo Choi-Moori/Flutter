@@ -23,7 +23,7 @@ class _MyAppState extends State<MyApp> {
   void _handleLogin(String id, String pw) async {
     final isValid = await DatabaseHelper().validateUser(id, pw);
 
-    if (isValid != null) {
+    if (isValid != null && isValid['is_approved'] == 1) {
       setState(() {
         _isLoggedIn = true;
       });

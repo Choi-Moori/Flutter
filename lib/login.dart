@@ -1,20 +1,37 @@
+// login.dart
+
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  final Function(String, String) onLogin;
-
+  final void Function(String id, String pw) onLogin;
   const LoginScreen({required this.onLogin});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _idController = TextEditingController();
-  final _pwController = TextEditingController();
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _pwController = TextEditingController();
 
-  
-  void _triggerLogin(){
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _idController.dispose();
+    _pwController.dispose();
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _triggerLogin() {
     final id = _idController.text;
     final pw = _pwController.text;
     widget.onLogin(id, pw);
@@ -23,34 +40,60 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('로그인')),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'id : admin \npw : 1234',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 30),
-            TextField(controller: _idController, decoration: InputDecoration(labelText: '아이디')),
-            SizedBox(height: 10),
-            TextField(
-              controller: _pwController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: '비밀번호'),
-              textInputAction: TextInputAction.done,
-              onSubmitted: (_) => _triggerLogin(),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _triggerLogin,
-              child: Text('로그인'),
-            ),
+      appBar: AppBar(
+        title: Text('인증'),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: '로그인'),
+            Tab(text: '회원가입'),
           ],
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          // 로그인 탭
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '로그인 정보를 입력하세요',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 30),
+                TextField(
+                  controller: _idController,
+                  decoration: InputDecoration(labelText: '아이디'),
+                  textInputAction: TextInputAction.next,
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _pwController,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: '비밀번호'),
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _triggerLogin(),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _triggerLogin,
+                    child: Text('로그인'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // 회원가입 탭 (아직 기능 없음)
+          Center(
+            child: Text('회원가입 탭 - 추후 구현 예정'),
+          ),
+        ],
       ),
     );
   }

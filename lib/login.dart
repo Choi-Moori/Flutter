@@ -1,5 +1,3 @@
-// login.dart
-
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,6 +13,12 @@ class _LoginScreenState extends State<LoginScreen>
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
 
+  final TextEditingController _signUpIdController = TextEditingController();
+  final TextEditingController _signUpPwController = TextEditingController();
+  final TextEditingController _signUpPwConfirmController = TextEditingController();
+
+  bool _passwordsMatch = true;
+
   late TabController _tabController;
 
   @override
@@ -27,6 +31,9 @@ class _LoginScreenState extends State<LoginScreen>
   void dispose() {
     _idController.dispose();
     _pwController.dispose();
+    _signUpIdController.dispose();
+    _signUpPwController.dispose();
+    _signUpPwConfirmController.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -35,6 +42,29 @@ class _LoginScreenState extends State<LoginScreen>
     final id = _idController.text;
     final pw = _pwController.text;
     widget.onLogin(id, pw);
+  }
+
+  void _handleSignUp() {
+    setState(() {
+      _passwordsMatch =
+          _signUpPwController.text == _signUpPwConfirmController.text;
+    });
+
+    if (_passwordsMatch) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: Text('회원가입 성공'),
+          content: Text('ID: ${_signUpIdController.text}'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('확인'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -89,9 +119,46 @@ class _LoginScreenState extends State<LoginScreen>
             ),
           ),
 
-          // 회원가입 탭 (아직 기능 없음)
-          Center(
-            child: Text('회원가입 탭 - 추후 구현 예정'),
+          // 회원가입 탭
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '회원가입 정보를 입력하세요',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 30),
+                TextField(
+                  controller: _signUpIdController,
+                  decoration: InputDecoration(labelText: '아이디'),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _signUpPwController,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: '비밀번호'),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _signUpPwConfirmController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: '비밀번호 확인',
+                    errorText: _passwordsMatch ? null : '비밀번호가 일치하지 않습니다.',
+                  ),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _handleSignUp,
+                    child: Text('회원가입'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

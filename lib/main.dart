@@ -6,12 +6,13 @@ import 'shoppingmalls.dart';
 import 'screens/shopping_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/order_screen.dart';
+import '../db/database_helper.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatefulWidget { 
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -19,8 +20,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isLoggedIn = false;
 
-  void _handleLogin(String id, String pw) {
-    if (id == 'admin' && pw == '1234') {
+  void _handleLogin(String id, String pw) async {
+    final isValid = await DatabaseHelper().validateUser(id, pw);
+
+    if (isValid != null) {
       setState(() {
         _isLoggedIn = true;
       });
@@ -29,7 +32,7 @@ class _MyAppState extends State<MyApp> {
         context: navigatorKey.currentContext!,
         builder: (context) => AlertDialog(
           title: Text('로그인 실패'),
-          content: Text('아이디 또는 비밀번호가 틀렸습니다.\n id : admin \n pw : 1234'),
+          content: Text('아이디 또는 비밀번호가 틀렸습니다'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

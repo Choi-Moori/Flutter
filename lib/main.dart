@@ -6,7 +6,7 @@ import 'shoppingmalls.dart';
 import 'screens/shopping_screen.dart';
 import 'screens/cart_screen.dart';
 import 'screens/order_screen.dart';
-import '../db/database_helper.dart';
+import 'common/database_helper.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

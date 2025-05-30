@@ -37,7 +37,8 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             price INTEGER NOT NULL,
-            category TEXT NOT NULL
+            category TEXT NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 0,
           )
         ''');
 

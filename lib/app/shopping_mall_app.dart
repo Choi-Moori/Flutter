@@ -10,7 +10,7 @@ import '../feature/order/models/order.dart';
 
 class ShoppingMallApp extends StatefulWidget {
   final VoidCallback onLogout;
-  const ShoppingMallApp({required this.onLogout});
+  const ShoppingMallApp({super.key, required this.onLogout});
 
   @override
   State<ShoppingMallApp> createState() => _ShoppingMallAppState();
